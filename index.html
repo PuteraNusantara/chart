@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChartHunter AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="max-w-xl mx-auto py-10 px-4">
+    <h1 class="text-3xl font-bold mb-6 text-center">ChartHunter AI</h1>
+
+    <div class="mb-6">
+      <input id="kodeInput" type="text" placeholder="Masukkan kode saham (contoh: BBCA)" class="w-full p-3 border rounded-xl">
+      <button onclick="cekSaham()" class="mt-3 w-full bg-blue-600 text-white py-2 rounded-xl">Cek Saham</button>
+    </div>
+
+    <div id="hasil" class="hidden bg-white p-5 rounded-xl shadow">
+      <p class="text-xl font-bold" id="kodeLabel"></p>
+      <p>Harga: <span id="harga"></span></p>
+      <p>Volume: <span id="volume"></span></p>
+      <p>Open: <span id="open"></span></p>
+      <p>Close sebelumnya: <span id="close"></span></p>
+    </div>
+
+    <canvas id="chart" class="mt-6 hidden"></canvas>
+
+    <div class="mt-10">
+      <h2 class="text-xl font-semibold mb-3">Riwayat Cek</h2>
+      <ul id="riwayatList" class="bg-white rounded-xl p-4 shadow space-y-2"></ul>
+    </div>
+  </div>
+
+<script>
+async function cekSaham() {
+  const kode = document.getElementById('kodeInput').value.trim().toUpperCase();
+  if (!kode) return;
+  
+  const res = await fetch(`http://localhost:5000/api/saham/${kode}`);
+  const data = await res.json();
+  
+  if (data.error) {
+    alert(data.error);
+    return;
+  }
+
+  document.getElementById('hasil').classList.remove('hidden');
+  document.getElementById('kodeLabel').innerText = data.kode;
+  document.getElementById('harga').innerText = data.harga;
+  document.getElementById('volume').innerText = data.volume;
+  document.getElementById('open').innerText = data.open;
+  document.getElementById('close').innerText = data.close;
+
+  loadHistory();
+}
+
+async function loadHistory() {
+  const res = await fetch(`http://localhost:5000/api/history`);
+  const history = await res.json();
+
+  const list = document.getElementById('riwayatList');
+  list.innerHTML = '';
+  history.slice(0, 10).forEach(item => {
+    const li = document.createElement('li');
+    li.innerHTML = `<b>${item.kode}</b> - Rp${item.harga} <br><small>${new Date(item.waktu).toLocaleString()}</small>`;
+    list.appendChild(li);
+  });
+}
+
+loadHistory();
+</script>
+</body>
+</html>
