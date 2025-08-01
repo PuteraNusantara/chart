@@ -1,3 +1,4 @@
-flask
-flask-cors
+Flask
 yfinance
+flask-cors
+gunicorn
