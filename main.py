@@ -58,6 +58,9 @@ def cek_saham(kode):
 @app.route("/api/history", methods=["GET"])
 def get_history():
     return jsonify(riwayat[::-1])  # urutan terbaru dulu
+@app.route("/")
+def index():
+    return "API Saham Jalan!"
 
 if __name__ == "__main__":
     import os
