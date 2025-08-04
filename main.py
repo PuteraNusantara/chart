@@ -35,7 +35,8 @@ def index():
 def cek_saham(kode):
     try:
         kode = kode.upper()
-        url = f"https://api.twelvedata.com/time_series?symbol={kode}.JK&interval=1day&apikey={API_KEY}&outputsize=2"
+        url = f"https://api.twelvedata.com/time_series?symbol={kode}.IDX&interval=1day&apikey={API_KEY}&outputsize=2"
+
         res = requests.get(url)
         data = res.json()
 
@@ -70,4 +71,5 @@ def get_history():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=False, host="0.0.0.0", port=port)
+
 
