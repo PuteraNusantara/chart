@@ -8,8 +8,9 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-API_KEY = os.getenv("TWELVE_API_KEY", "57ffc9d4ef854dc282b3ed44a8d48144")  # Ganti di Railway nanti
+API_KEY = "57ffc9d4ef854dc282b3ed44a8d48144"  # Ganti di Railway nanti
 HISTORY_FILE = "history.json"
+
 
 # Muat riwayat lama jika ada
 if os.path.exists(HISTORY_FILE):
@@ -69,3 +70,4 @@ def get_history():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=False, host="0.0.0.0", port=port)
+
