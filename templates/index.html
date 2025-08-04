@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Informasi Saham</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2em;
+            background-color: #f5f5f5;
+        }
+        input, button {
+            padding: 8px;
+            margin-right: 10px;
+        }
+        #hasil {
+            margin-top: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px #aaa;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cek Saham</h1>
+    <input type="text" id="kode" placeholder="Contoh: BBCA">
+    <button onclick="cekSaham()">Cek</button>
+
+    <div id="hasil"></div>
+
+    <script>
+        async function cekSaham() {
+            const kode = document.getElementById("kode").value.trim().toUpperCase();
+            const hasilDiv = document.getElementById("hasil");
+
+            if (!kode) {
+                hasilDiv.innerHTML = "<p>Silakan masukkan kode saham.</p>";
+                return;
+            }
+
+            hasilDiv.innerHTML = "<p>Memuat...</p>";
+
+            try {
+                const res = await fetch(`/api/saham/${kode}`);
+                const data = await res.json();
+
+                if (res.status !== 200) {
+                    hasilDiv.innerHTML = `<p style="color:red;">${data.error}</p>`;
+                    return;
+                }
+
+                hasilDiv.innerHTML = `
+                    <h3>${data.kode}</h3>
+                    <p><strong>Harga Terakhir:</strong> Rp ${data.harga}</p>
+                    <p><strong>Open:</strong> Rp ${data.open}</p>
+                    <p><strong>Close Sebelumnya:</strong> Rp ${data.close}</p>
+                    <p><strong>Volume:</strong> ${data.volume}</p>
+                    <p><strong>Waktu:</strong> ${new Date(data.waktu).toLocaleString()}</p>
+                `;
+            } catch (err) {
+                hasilDiv.innerHTML = `<p style="color:red;">Gagal mengambil data.</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
